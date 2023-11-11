@@ -1,4 +1,6 @@
 pygame
 pygobject
 RPi.GPIO
-pvrecorder
+wavio
+scipy
+sounddevice
