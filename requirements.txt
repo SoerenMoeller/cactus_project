@@ -1,1 +1,4 @@
 playsound
+pygobject
+RPi.GPIO
+

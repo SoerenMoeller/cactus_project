@@ -15,6 +15,8 @@ ssh pi@raspberrypi.local
 python3 -m venv .venv
 source .venv/bin/activate
 python3 -m pip install -r requirements.txt
+sudo apt install python3-gst-1.0
+sudo apt install python3-gpiozero
 ```
 
 ### Bluetooth setup
