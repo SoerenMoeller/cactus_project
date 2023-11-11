@@ -1,10 +1,10 @@
-from playsound import playsound
 import os
-import multiprocessing
+from pygame import mixer
 
 
 RESOURCES: str = "resources"
-playing_process = None
+mixer.init()
+mixer.music.set_volume(1)
 
 
 def play_audio(file_name: str):
@@ -13,12 +13,10 @@ def play_audio(file_name: str):
     file_path = os.path.join(RESOURCES, f"{file_name}.mp3")
     assert os.path.exists(file_path), f"File '{file_path}' not found"
 
-    if playing_process is not None:
-        playing_process.terminate()
-        playing_process = None
-
     print(f"Playing '{file_path}'")
-    playing_process = multiprocessing.Process(target=playsound, args=(file_path,))
-    playing_process.daemon = True
-    playing_process.start()
-   
+    mixer.music.load(file_path)
+    mixer.music.play(-1)
+
+
+def terminate_audio():
+    mixer.music.pause()
