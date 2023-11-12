@@ -3,12 +3,16 @@ from pygame import mixer
 
 
 RESOURCES: str = "resources"
+MUSIC: str = "music"
 mixer.init()
 mixer.music.set_volume(1)
 
 
 def play_audio(file_name: str, loop: bool = True):
-    file_path = os.path.join(RESOURCES, f"{file_name}.mp3")
+    if loop:   
+        file_path = os.path.join(RESOURCES, MUSIC, f"{file_name}.mp3")
+    else:
+        file_path = os.path.join(RESOURCES, f"{file_name}.mp3")
     assert os.path.exists(file_path), f"File '{file_path}' not found"
 
     print(f"Playing '{file_path}'")
