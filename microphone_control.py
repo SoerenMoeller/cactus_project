@@ -33,6 +33,9 @@ try:
     import sounddevice as sd
     import soundfile as sf
 
+    sd.default.device = 1
+    print(sd.default.device)
+    
     if args.list_devices:
         print(sd.query_devices())
         parser.exit(0)

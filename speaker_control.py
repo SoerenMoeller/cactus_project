@@ -8,8 +8,6 @@ mixer.music.set_volume(1)
 
 
 def play_audio(file_name: str):
-    global playing_process
-
     file_path = os.path.join(RESOURCES, f"{file_name}.mp3")
     assert os.path.exists(file_path), f"File '{file_path}' not found"
 
