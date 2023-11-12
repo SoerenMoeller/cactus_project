@@ -3,7 +3,9 @@ import pin_mapping as pin
 import RPi.GPIO as GPIO
 import signal
 import sys
-from random_phrases import * 
+import tts_control
+from random import randrange
+from random_phrases import *
 from time import time
 from enum import Enum
 import lcd.lcd_control as lcd_control
@@ -19,8 +21,10 @@ class State(Enum):
 DUTY_CYCLE = 100
 FREQUENCY_ENGINE = 50
 BUTTON_BOUNCE = 20
-RANDOM_PLAY_MIN_WAIT = 10 * 1000  # in msec
-RANDOM_PLAY_MAX_WAIT = 120 * 1000 # in msec
+RANDOM_PLAY_MIN_WAIT = 10   # in sec
+RANDOM_PLAY_MAX_WAIT = 120  # in sec
+
+
 engine_power_l = None
 engine_power_r = None
 state: State = State.IDLE
@@ -55,8 +59,8 @@ def setup():
     GPIO.add_event_detect(pin.BUTTON_MUSIC, GPIO.FALLING,
             callback=button_pressed_callback, bouncetime=BUTTON_BOUNCE)
 
-
     lcd_control.display("")
+    start_random_timer()
 
 def loop():
     global state
@@ -67,7 +71,7 @@ def loop():
                 state = State.START_MUSIC
 
             time_stamp = time()
-            if RANDOM_PLAY_MIN_WAIT <= time_stamp - start_time <= RANDOM_PLAY_MAX_WAIT:
+            if time_stamp - time_start >= next_play_timestamp:
                 state = State.START_RANDOM_PLAY
         case State.START_MUSIC:
             speaker_control.play_audio("test")
@@ -82,10 +86,17 @@ def loop():
                 GPIO.output(pin.LED_POWER, False)
                 state = State.IDLE
                 engine_power_l.stop()
+                start_random_timer()
 
                 print("Stopped music")
         case State.START_RANDOM_PLAY:
+            phrase = get_random_phrase()
+            tts_control.createTTS(phrase[VOICE])
+            speaker_control.play_audio("tts")
+            lcd_control.display(phrase[TEXT])
 
+            start_random_timer()
+            state = State.IDLE
         case _:
             assert False, "Unknown state"
 
@@ -94,6 +105,14 @@ def button_pressed_callback(channel):
     global activate_music
 
     activate_music = not activate_music
+
+
+def start_random_timer():
+    global next_play_timestamp, time_start
+    current_time = time()
+
+    next_play_timestamp = 1000 * randrange(RANDOM_PLAY_MIN_WAIT, RANDOM_PLAY_MAX_WAIT)
+    time_start = current_time
 
 
 def signal_handler(sig, frame):
