@@ -99,7 +99,7 @@ def loop():
             tts_control.createTTS(phrase[VOICE])
             speaker_control.play_audio("tts", False)
             if LCD_ENABLED:
-                lcd_control.display(phrase[TEXT])
+                lcd_control.display(phrase[TEXT][0], phrase[TEXT][1])
 
             start_random_timer()
             state = State.IDLE
