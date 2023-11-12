@@ -11,6 +11,8 @@ Connect to the Raspberry, remember to be in the same WiFi/Network. Use the login
 ssh pi@raspberrypi.local
 ```
 
+Obviously, make sure the pi has connection to the internet.
+
 Build a virtual enviroment using python. This should create a ./.venv folder.
 ```
 python3 -m venv .venv
@@ -37,3 +39,5 @@ wget https://file-examples.com/storage/fe9d743740654a8139a48e1/2017/11/file_exam
 ffplay test.mp3
 ```
 
+###
+Things to randomly say can be added in `random_phrases`

@@ -12,6 +12,22 @@ PHRASES = [
     [
         ["Ich liebe", "Schokobrötchen"],
         "Ich liebe Schokobrötchen"
+    ],
+    [
+        ["O.o", ""],
+        "Was guckst du so blöd"
+    ],
+    [
+        [">:(", ""],
+        "Du elendiger NPC"
+    ],
+    [
+        ["Geh HEIM!", ""],
+        "Geh doch nach Hause!"
+    ],
+    [
+        ["Ich gehe!", ""],
+        "Ich hau ab!"
     ]
 ]
 

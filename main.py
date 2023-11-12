@@ -11,6 +11,8 @@ from random import randrange
 from random_phrases import *
 from time import time
 from enum import Enum
+from os import listdir
+from os.path import isfile, join
 if LCD_ENABLED:
     import lcd.lcd_control as lcd_control
 
@@ -24,9 +26,9 @@ class State(Enum):
 
 DUTY_CYCLE = 100
 FREQUENCY_ENGINE = 50
-BUTTON_BOUNCE = 20
 RANDOM_PLAY_MIN_WAIT = 10   # in sec
 RANDOM_PLAY_MAX_WAIT = 15   # in sec
+
 
 engine_power_l = None
 engine_power_r = None
@@ -59,9 +61,8 @@ def setup():
 
     GPIO.output(pin.LED_POWER, False)
 
-    GPIO.add_event_detect(pin.BUTTON_MUSIC, GPIO.FALLING,
-            callback=button_pressed_callback, bouncetime=BUTTON_BOUNCE)
-    
+    GPIO.add_event_detect(pin.BUTTON_MUSIC, GPIO.FALLING, callback=button_pressed_callback)
+
     if LCD_ENABLED:
         lcd_control.display("", "")
     start_random_timer()
@@ -78,7 +79,8 @@ def loop():
             if time_stamp - time_start >= next_play_delay:
                 state = State.START_RANDOM_PLAY
         case State.START_MUSIC:
-            speaker_control.play_audio("test")
+            music_name = get_random_music()
+            speaker_control.play_audio(music_name)
             GPIO.output(pin.LED_POWER, True)
             engine_power_l.start(DUTY_CYCLE)
 
@@ -120,6 +122,12 @@ def start_random_timer():
     next_play_delay = randrange(RANDOM_PLAY_MIN_WAIT, RANDOM_PLAY_MAX_WAIT)
     print(f"Waiting for {next_play_delay}s before playing randomly")
     time_start = current_time
+
+
+def get_random_music():
+    path: str = "resources/music"
+    files = [f.removesuffix(".mp3") for f in listdir(path) if isfile(join(path, f))]
+    return choice(files)
 
 
 def signal_handler(sig, frame):

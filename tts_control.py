@@ -1,9 +1,9 @@
-from gtts import gTTS 
- 
+from gtts import gTTS
+
 
 def createTTS(text: str):
     language = "de"
-    
-    myobj = gTTS(text=text, lang=language, slow=False) 
-    myobj.save("resources/tts.mp3") 
-  
+
+    myobj = gTTS(text=text, lang=language, slow=False)
+    myobj.save("resources/tts.mp3")
+
