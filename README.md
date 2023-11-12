@@ -41,3 +41,9 @@ ffplay test.mp3
 
 ###
 Things to randomly say can be added in `random_phrases`
+
+
+# TODO
+- Automate connecting to bluetooth
+- Start script
+- Fix random addEdge bug
