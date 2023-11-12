@@ -1,3 +1,6 @@
+LCD_ENABLED = False
+
+
 import speaker_control
 import pin_mapping as pin
 import RPi.GPIO as GPIO
@@ -8,7 +11,8 @@ from random import randrange
 from random_phrases import *
 from time import time
 from enum import Enum
-import lcd.lcd_control as lcd_control
+if LCD_ENABLED:
+    import lcd.lcd_control as lcd_control
 
 
 class State(Enum):
@@ -22,15 +26,14 @@ DUTY_CYCLE = 100
 FREQUENCY_ENGINE = 50
 BUTTON_BOUNCE = 20
 RANDOM_PLAY_MIN_WAIT = 10   # in sec
-RANDOM_PLAY_MAX_WAIT = 120  # in sec
-
+RANDOM_PLAY_MAX_WAIT = 15   # in sec
 
 engine_power_l = None
 engine_power_r = None
 state: State = State.IDLE
 activate_music: bool = False
 time_start = time()
-next_play_timestamp = 10000
+next_play_delay = 10000
 
 
 def main():
@@ -58,8 +61,9 @@ def setup():
 
     GPIO.add_event_detect(pin.BUTTON_MUSIC, GPIO.FALLING,
             callback=button_pressed_callback, bouncetime=BUTTON_BOUNCE)
-
-    lcd_control.display("")
+    
+    if LCD_ENABLED:
+        lcd_control.display("")
     start_random_timer()
 
 def loop():
@@ -71,7 +75,7 @@ def loop():
                 state = State.START_MUSIC
 
             time_stamp = time()
-            if time_stamp - time_start >= next_play_timestamp:
+            if time_stamp - time_start >= next_play_delay:
                 state = State.START_RANDOM_PLAY
         case State.START_MUSIC:
             speaker_control.play_audio("test")
@@ -90,10 +94,12 @@ def loop():
 
                 print("Stopped music")
         case State.START_RANDOM_PLAY:
+            print("Starting to random play")
             phrase = get_random_phrase()
             tts_control.createTTS(phrase[VOICE])
-            speaker_control.play_audio("tts")
-            lcd_control.display(phrase[TEXT])
+            speaker_control.play_audio("tts", False)
+            if LCD_ENABLED:
+                lcd_control.display(phrase[TEXT])
 
             start_random_timer()
             state = State.IDLE
@@ -108,10 +114,11 @@ def button_pressed_callback(channel):
 
 
 def start_random_timer():
-    global next_play_timestamp, time_start
+    global next_play_delay, time_start
     current_time = time()
 
-    next_play_timestamp = 1000 * randrange(RANDOM_PLAY_MIN_WAIT, RANDOM_PLAY_MAX_WAIT)
+    next_play_delay = randrange(RANDOM_PLAY_MIN_WAIT, RANDOM_PLAY_MAX_WAIT)
+    print(f"Waiting for {next_play_delay}s before playing randomly")
     time_start = current_time
 
 
@@ -120,7 +127,8 @@ def signal_handler(sig, frame):
     if engine_power_l is not None:
         engine_power_l.stop()
     GPIO.cleanup()
-    lcd_control.close()
+    if LCD_ENABLED:
+        lcd_control.close()
     sys.exit(0)
 
 
