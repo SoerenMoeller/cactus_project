@@ -4,6 +4,7 @@ import RPi.GPIO as GPIO
 import signal
 import sys
 from enum import Enum
+import lcd.lcd_control as lcd_control
 
 
 class State(Enum):
@@ -38,6 +39,9 @@ def setup():
     GPIO.setup(pin.LED_POWER, GPIO.OUT)
     GPIO.setup(pin.ENGINE_POWER_L, GPIO.OUT)
     GPIO.setup(pin.ENGINE_POWER_R, GPIO.OUT)
+    #GPIO.setup(pin.LCD_DATA, GPIO.OUT)
+    #GPIO.setup(pin.LCD_CLOCK, GPIO.OUT)
+
     engine_power_l = GPIO.PWM(pin.ENGINE_POWER_L, FREQUENCY_ENGINE)
     engine_power_r = GPIO.PWM(pin.ENGINE_POWER_R, FREQUENCY_ENGINE)
 
@@ -46,6 +50,8 @@ def setup():
     GPIO.add_event_detect(pin.BUTTON_MUSIC, GPIO.FALLING,
             callback=button_pressed_callback, bouncetime=BUTTON_BOUNCE)
 
+
+    lcd_control.display("2", "1")
 
 def loop():
     global state
@@ -84,6 +90,7 @@ def signal_handler(sig, frame):
     if engine_power_l is not None:
         engine_power_l.stop()
     GPIO.cleanup()
+    lcd_control.close()
     sys.exit(0)
 
 

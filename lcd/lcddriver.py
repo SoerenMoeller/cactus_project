@@ -1,7 +1,7 @@
 ﻿import sys
-sys.path.append("./lib")
+sys.path.append("../lib")
 
-import i2c_lib
+import lcd.i2c_lib as i2c_lib
 from time import *
 
 # LCD Address
@@ -112,3 +112,7 @@ class lcd:
    def lcd_clear(self):
       self.lcd_write(LCD_CLEARDISPLAY)
       self.lcd_write(LCD_RETURNHOME)
+
+
+   def close(self):
+      self.lcd_device.close()
