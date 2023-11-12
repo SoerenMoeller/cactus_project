@@ -6,18 +6,17 @@ Setup the Raspberry Pi Zero via the RPI Imager, setup ssh via `Ctrl+Strg+X`.
 sudo apt install rpi-imager
 ```
 
-Connect to the Raspberry, remember to be in the same WiFi/Network.
+Connect to the Raspberry, remember to be in the same WiFi/Network. Use the login data defined in the previous step.
 ```
 ssh pi@raspberrypi.local
 ```
 
+Build a virtual enviroment using python. This should create a ./.venv folder.
 ```
 python3 -m venv .venv
-source .venv/bin/activate
-python3 -m pip install -r requirements.txt
-sudo apt install python3-gst-1.0
-sudo apt install python3-gpiozero
 ```
+
+Install requirements using `make venv` and start program using `make`.
 
 ### Bluetooth setup
 Firstly, connect a bluetooth speaker to the raspberry.

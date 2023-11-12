@@ -1,5 +1,4 @@
 pygame
-pygobject
 RPi.GPIO
 wavio
 scipy

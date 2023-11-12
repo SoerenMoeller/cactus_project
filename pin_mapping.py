@@ -1,0 +1,4 @@
+ENGINE_POWER_L    = 15
+ENGINE_POWER_R    = 14
+BUTTON_MUSIC      = 18
+LED_POWER         = 23
