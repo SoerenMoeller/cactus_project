@@ -1,5 +1,3 @@
 pygame
 RPi.GPIO
-wavio
-scipy
-sounddevice
+TTS
