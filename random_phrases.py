@@ -3,14 +3,14 @@ from random import choice
 TEXT  = 0
 VOICE = 1
 PHRASES = [
-    {
-        TEXT: ["Ich hasse", "Mikrophone"],
-        VOICE: "Ich hasse Mikrophone"
-    },
-    {
-        TEXT: ["", ""],
-        VOICE: "Ich liebe Schokobrötchen"
-    }
+    [
+        ["Ich hasse", "Mikrophone"],
+        "Ich hasse Mikrophone"
+    ],
+    [
+        ["", ""],
+        "Ich liebe Schokobrötchen"
+    ]
 ]
 
 
