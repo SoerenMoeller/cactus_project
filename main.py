@@ -3,6 +3,8 @@ import pin_mapping as pin
 import RPi.GPIO as GPIO
 import signal
 import sys
+from random_phrases import * 
+from time import time
 from enum import Enum
 import lcd.lcd_control as lcd_control
 
@@ -11,15 +13,20 @@ class State(Enum):
     IDLE = 0
     START_MUSIC = 1
     MUSIC_LOOP = 2
+    START_RANDOM_PLAY = 3
 
 
 DUTY_CYCLE = 100
 FREQUENCY_ENGINE = 50
 BUTTON_BOUNCE = 20
+RANDOM_PLAY_MIN_WAIT = 10 * 1000  # in msec
+RANDOM_PLAY_MAX_WAIT = 120 * 1000 # in msec
 engine_power_l = None
 engine_power_r = None
 state: State = State.IDLE
 activate_music: bool = False
+time_start = time()
+next_play_timestamp = 10000
 
 
 def main():
@@ -39,8 +46,6 @@ def setup():
     GPIO.setup(pin.LED_POWER, GPIO.OUT)
     GPIO.setup(pin.ENGINE_POWER_L, GPIO.OUT)
     GPIO.setup(pin.ENGINE_POWER_R, GPIO.OUT)
-    #GPIO.setup(pin.LCD_DATA, GPIO.OUT)
-    #GPIO.setup(pin.LCD_CLOCK, GPIO.OUT)
 
     engine_power_l = GPIO.PWM(pin.ENGINE_POWER_L, FREQUENCY_ENGINE)
     engine_power_r = GPIO.PWM(pin.ENGINE_POWER_R, FREQUENCY_ENGINE)
@@ -51,7 +56,7 @@ def setup():
             callback=button_pressed_callback, bouncetime=BUTTON_BOUNCE)
 
 
-    lcd_control.display("2", "1")
+    lcd_control.display("")
 
 def loop():
     global state
@@ -60,6 +65,10 @@ def loop():
         case State.IDLE:
             if activate_music:
                 state = State.START_MUSIC
+
+            time_stamp = time()
+            if RANDOM_PLAY_MIN_WAIT <= time_stamp - start_time <= RANDOM_PLAY_MAX_WAIT:
+                state = State.START_RANDOM_PLAY
         case State.START_MUSIC:
             speaker_control.play_audio("test")
             GPIO.output(pin.LED_POWER, True)
@@ -75,6 +84,8 @@ def loop():
                 engine_power_l.stop()
 
                 print("Stopped music")
+        case State.START_RANDOM_PLAY:
+
         case _:
             assert False, "Unknown state"
 
