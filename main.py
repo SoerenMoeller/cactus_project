@@ -1,4 +1,4 @@
-LCD_ENABLED = False
+LCD_ENABLED = True
 
 
 import speaker_control
@@ -63,7 +63,7 @@ def setup():
             callback=button_pressed_callback, bouncetime=BUTTON_BOUNCE)
     
     if LCD_ENABLED:
-        lcd_control.display("")
+        lcd_control.display("", "")
     start_random_timer()
 
 def loop():
@@ -128,6 +128,7 @@ def signal_handler(sig, frame):
         engine_power_l.stop()
     GPIO.cleanup()
     if LCD_ENABLED:
+        lcd_control.display("", "")
         lcd_control.close()
     sys.exit(0)
 
